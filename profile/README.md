@@ -1,8 +1,8 @@
 <div align="center">
 
-<img src="assets/piggy-sol-gang.png" width="220" alt="Piggy SOL Gang cover art" />
-<img src="assets/piggy-girl-gang.png" width="220" alt="Piggy Girl Gang cover art" />
-<img src="assets/pig-mud.png" width="220" alt="Pig Mud cover art" />
+<img src="../assets/piggy-sol-gang.png" width="220" alt="Piggy SOL Gang cover art" />
+<img src="../assets/piggy-girl-gang.png" width="220" alt="Piggy Girl Gang cover art" />
+<img src="../assets/pig-mud.png" width="220" alt="Pig Mud cover art" />
 
 <h1>🐷 Piggy Gang</h1>
 
