@@ -1,0 +1,93 @@
+<div align="center">
+
+<img src="assets/piggy-sol-gang.png" width="220" alt="Piggy SOL Gang cover art" />
+<img src="assets/piggy-girl-gang.png" width="220" alt="Piggy Girl Gang cover art" />
+<img src="assets/pig-mud.png" width="220" alt="Pig Mud cover art" />
+
+<h1>🐷 Piggy Gang</h1>
+
+<p><b>Apps and art for the whole gang — start anywhere.</b></p>
+
+<p>
+  <a href="https://piggygang.net"><img src="https://img.shields.io/badge/piggygang.net-ff5fa2?style=for-the-badge&logo=vercel&logoColor=white&labelColor=0b0710" alt="piggygang.net" /></a>
+  <a href="https://discord.gg/8SjGR8Srvz"><img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white&labelColor=0b0710" alt="Discord" /></a>
+  <a href="https://x.com/PiggySolGang"><img src="https://img.shields.io/badge/X-0b0710?style=for-the-badge&logo=x&logoColor=white" alt="X" /></a>
+</p>
+<p>
+  <img src="https://img.shields.io/badge/Rust-0b0710?style=for-the-badge&logo=rust&logoColor=white" alt="Rust" />
+  <img src="https://img.shields.io/badge/Solana-9945FF?style=for-the-badge&logo=solana&logoColor=white&labelColor=0b0710" alt="Solana" />
+  <img src="https://img.shields.io/badge/Postgres%2017-4169E1?style=for-the-badge&logo=postgresql&logoColor=white&labelColor=0b0710" alt="Postgres 17" />
+  <img src="https://img.shields.io/badge/Next.js-0b0710?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js" />
+</p>
+
+Four NFT collections on Solana, a Rust indexer that knows everything about them,
+and five web apps on top — all built in the open.
+
+</div>
+
+<hr/>
+
+<h2 align="center">The gang</h2>
+
+| Collection | Supply | Standard | Where |
+|---|---:|---|---|
+| **Piggy SOL Gang** — ten thousand piggies, straight off the chain | 10,000 | Token Metadata | [Magic Eden](https://magiceden.io/marketplace/piggy_sol_gang) |
+| **Piggy Girl Gang** — pretty, fierce and dressed for it | 5,000 | Token Metadata | [Magic Eden](https://magiceden.io/marketplace/piggy_girl_gang) |
+| **Piggy Gang** — same ten thousand piggies, meaner art | 10,000 | Metaplex Core | [Magic Eden](https://magiceden.io/marketplace/pig_gang) |
+| **Pig Mud** — something's coming | 2,073 | Token Metadata | Coming soon |
+| <img src="assets/piggy-token.png" width="16" align="top" alt="" /> **$PIGGY** — the gang's coin | — | SPL, 9 decimals | [Solscan](https://solscan.io/token/FUtxQAXuC4TgQvF7C5RTRsgqHvPqn4iHhMicRZKV775E) |
+
+Piggy Gang is Piggy SOL Gang wearing new clothes: swapping burns the Token Metadata
+mint and creates a Metaplex Core asset with the same number. Same piggy, redrawn.
+
+<hr/>
+
+<h2 align="center">How it's built</h2>
+
+- **One spec runs the whole stack.** The indexer's OpenAPI file is frozen and hand-written; the explorer vendors a byte-identical copy, generates its typed client from it, and CI fails if the two drift apart. Changing the contract is always two commits — indexer first.
+- **The frontend shipped before the backend.** With nothing configured, the explorer serves committed fixtures through the very same generated client the real API will use. One server-side variable switches it over.
+- **The database makes two owners unrepresentable.** Ownership is stored as intervals with a GiST `EXCLUDE` constraint, so no NFT can have two open owners at once — not by convention, by the schema.
+- **Search is quick.** Filtering 10,000 NFTs by traits benches at a p50 of 40 ms on Postgres 17 — 5 ms for text search — against an acceptance bar of 100 ms.
+- **One package talks to Solana.** `@wallet-standard/app`, and nothing else: no web3.js, no wallet-adapter, no Buffer polyfill. The browser builds the transaction, the wallet signs it, the app just watches the signature. No key ever reaches a server.
+- **Adding a collection is config, not code.** One entry in `collections.toml` plus a mint list. Not a single on-chain address appears in Rust, SQL or tests.
+- **Raffles are free, and provably fair.** Entering never costs anything but gas. A Switchboard VRF picks the winner, and anyone can recompute the result from the published proof.
+- **We kept the art.** The collections' original image host went dark. The metadata was re-hosted, the renders were committed, and what survives in these repos may be the only complete copy left.
+
+<hr/>
+
+<h2 align="center">Repos</h2>
+
+| Repo | Lang | What it does | Status |
+|---|---|---|---|
+| [`indexer`](https://github.com/piggygang/indexer) | Rust | Indexes every Piggy NFT — traits, owners and full history — and serves them over a REST API | 🔨 Building |
+| [`explorer`](https://github.com/piggygang/explorer) | TypeScript | Search the collections by trait, look up a wallet, read an NFT's history | 🧪 Preview · [explorer.piggygang.net](https://explorer.piggygang.net) |
+| [`dressme`](https://github.com/piggygang/dressme) | TypeScript | Dress your piggy up in any traits you like and download the picture | ✅ **Live** · [dressme.piggygang.net](https://dressme.piggygang.net) |
+| [`raffles`](https://github.com/piggygang/raffles) | TypeScript | Free raffles for holders — nobody ever pays to enter | 🧪 Preview · [raffles.piggygang.net](https://raffles.piggygang.net) |
+| [`alpha-art`](https://github.com/piggygang/alpha-art) | TypeScript | alpha.art coming back as an open Solana marketplace | 🧪 Preview · [alpha.art](https://alpha.art) |
+| [`website`](https://github.com/piggygang/website) | TypeScript | The hub — every app and collection in one place | ✅ **Live** · [piggygang.net](https://piggygang.net) |
+
+Next up: **Migration** — swap your piggy to the new art.
+
+<hr/>
+
+<h2 align="center">The stack</h2>
+
+<div align="center">
+
+The backend is Rust 1.90 — actix-web, sqlx and Postgres 17.6, deployed on Railway.
+Every frontend is the same shape on purpose: Next.js 16 App Router, React 19,
+Tailwind v4, Node 24 and pnpm 11, on Vercel. Clone one and you already know the next.
+
+<img src="https://go-skill-icons.vercel.app/api/icons?i=rust,actix,solana,postgres,typescript,nextjs,react,tailwind&perline=8" alt="Rust, Actix, Solana, Postgres, TypeScript, Next.js, React, Tailwind" />
+
+</div>
+
+<hr/>
+
+<div align="center">
+
+**[piggygang.net](https://piggygang.net)** · **[Discord](https://discord.gg/8SjGR8Srvz)** · **[X](https://x.com/PiggySolGang)** · **[GitHub](https://github.com/piggygang)**
+
+<sub>Piggy SOL Gang (10,000) · Piggy Girl Gang (5,000) · Piggy Gang (10,000 — same piggies, meaner art) · Pig Mud (2,073) · $PIGGY</sub>
+
+</div>
